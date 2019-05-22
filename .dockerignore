@@ -1,0 +1,5 @@
+bin/networkpolicy-controller
+cmd
+hack
+pkg
+vendor
