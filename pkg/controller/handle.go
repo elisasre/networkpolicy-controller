@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	kubeSystem = "kube-system"
+	kubeSystem           = "kube-system"
+	cloudMetadataAddress = "169.254.169.254/32"
 )
 
 var policy = &networkv1.NetworkPolicy{
@@ -25,7 +26,7 @@ var policy = &networkv1.NetworkPolicy{
 					{
 						IPBlock: &networkv1.IPBlock{
 							CIDR:   "0.0.0.0/0",
-							Except: []string{"169.254.169.254/32"},
+							Except: []string{cloudMetadataAddress},
 						},
 					},
 				},
