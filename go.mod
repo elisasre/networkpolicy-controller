@@ -1,6 +1,6 @@
 module github.com/ElisaOyj/networkpolicy-controller
 
-go 1.14
+go 1.15
 
 require (
 	github.com/gogo/protobuf v0.0.0-20171007142547-342cbe0a0415 // indirect
