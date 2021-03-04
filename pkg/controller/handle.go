@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"regexp"
@@ -45,10 +46,11 @@ func notFound(err error, name string) bool {
 
 func (c *Controller) ensurePolicyExist(namespace string) {
 	if namespace != kubeSystem {
-		_, err := c.kclient.NetworkingV1().NetworkPolicies(namespace).Update(policy)
+		ctx := context.Background()
+		_, err := c.kclient.NetworkingV1().NetworkPolicies(namespace).Update(ctx, policy, metav1.UpdateOptions{})
 		if err != nil {
 			if notFound(err, policy.Name) {
-				_, err = c.kclient.NetworkingV1().NetworkPolicies(namespace).Create(policy)
+				_, err = c.kclient.NetworkingV1().NetworkPolicies(namespace).Create(ctx, policy, metav1.CreateOptions{})
 			}
 			if err != nil {
 				log.Printf("ERROR namespace %s: %v", namespace, err)
