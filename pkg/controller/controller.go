@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"context"
 	"sync"
 	"time"
 
@@ -40,13 +41,14 @@ func (c *Controller) Run(stopCh <-chan struct{}, wg *sync.WaitGroup) {
 // NewNetworkWatcher creates a new nsController
 func NewNetworkWatcher(kclient *kubernetes.Clientset) *Controller {
 	watcher := &Controller{}
+	ctx := context.Background()
 	nsInformer := cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options metav1.ListOptions) (runtime.Object, error) {
-				return kclient.CoreV1().Namespaces().List(options)
+				return kclient.CoreV1().Namespaces().List(ctx, options)
 			},
 			WatchFunc: func(options metav1.ListOptions) (watch.Interface, error) {
-				return kclient.CoreV1().Namespaces().Watch(options)
+				return kclient.CoreV1().Namespaces().Watch(ctx, options)
 			},
 		},
 		&v1.Namespace{},
@@ -61,10 +63,10 @@ func NewNetworkWatcher(kclient *kubernetes.Clientset) *Controller {
 	npInformer := cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options metav1.ListOptions) (runtime.Object, error) {
-				return kclient.NetworkingV1().NetworkPolicies(v1.NamespaceAll).List(options)
+				return kclient.NetworkingV1().NetworkPolicies(v1.NamespaceAll).List(ctx, options)
 			},
 			WatchFunc: func(options metav1.ListOptions) (watch.Interface, error) {
-				return kclient.NetworkingV1().NetworkPolicies(v1.NamespaceAll).Watch(options)
+				return kclient.NetworkingV1().NetworkPolicies(v1.NamespaceAll).Watch(ctx, options)
 			},
 		},
 		&networkv1.NetworkPolicy{},
