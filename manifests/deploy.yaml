@@ -18,9 +18,9 @@ rules:
   resources:
   - networkpolicies
   verbs:
+  - get
   - list
   - watch
-  - update
   - create
 - apiGroups: [""]
   resources:

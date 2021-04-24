@@ -10,6 +10,7 @@ import (
 
 	"k8s.io/api/core/v1"
 	networkv1 "k8s.io/api/networking/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -42,15 +43,16 @@ func (c *Controller) ensurePoliciesExist(ns *v1.Namespace) {
 			log.Printf("Got error while unmarshalling %s: %v", ns.Name, err)
 			continue
 		}
-
 		ctx := context.Background()
-		_, err = c.kclient.NetworkingV1().NetworkPolicies(ns.Name).Update(ctx, finalSpec, metav1.UpdateOptions{})
+		_, err = c.kclient.NetworkingV1().NetworkPolicies(ns.Name).Get(ctx, finalSpec.Name, metav1.GetOptions{})
 		if err != nil {
-			if notFound(err, finalSpec.Name) {
-				_, err = c.kclient.NetworkingV1().NetworkPolicies(ns.Name).Create(ctx, finalSpec, metav1.CreateOptions{})
-			}
-			if err != nil {
-				log.Printf("Got error namespace %s: %v", ns.Name, err)
+			if errors.IsNotFound(err) {
+				_, errCreate := c.kclient.NetworkingV1().NetworkPolicies(ns.Name).Create(ctx, finalSpec, metav1.CreateOptions{})
+				if errCreate != nil {
+					log.Printf("Got error while creating networkpolicy %s - %s: %v", ns.Name, finalSpec.Name, errCreate)
+				}
+			} else {
+				log.Printf("Got error while finding networkpolicy %s: %v", ns.Name, err)
 			}
 		}
 	}
