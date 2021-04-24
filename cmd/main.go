@@ -28,8 +28,12 @@ func main() {
 		panic(err.Error())
 	}
 
+	configFile := "./hack/dev.yaml"
+	if os.Getenv("CONFIG") != "" {
+		configFile = os.Getenv("CONFIG")
+	}
 	log.Printf("Starting application...")
-	go controller.NewNetworkWatcher(clientset).Run(stop, wg)
+	go controller.NewNetworkWatcher(clientset, configFile).Run(stop, wg)
 	<-sigs
 	log.Printf("Shutting down...")
 	close(stop)

@@ -26,6 +26,7 @@ rules:
   resources:
   - namespaces
   verbs:
+  - get
   - list
   - watch
 
@@ -64,6 +65,45 @@ spec:
         app.kubernetes.io/name: networkpolicy-controller
     spec:
       serviceAccountName: networkpolicy-controller
+      volumes:
+      - name: networkpolicy-configuration
+        configMap:
+          name: networkpolicy-configuration
       containers:
       - name: networkpolicy-controller
         image: elisaoyj/networkpolicy-controller:latest
+        volumeMounts:
+        - name: networkpolicy-configuration
+          mountPath: /code/config
+        env:
+        - name: CONFIG
+          value: /code/config/config.yaml
+
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: networkpolicy-configuration
+  labels:
+    app.kubernetes.io/name: networkpolicy-controller
+data:
+  config.yaml: |-
+    ignoreAnnotation: networkpolicy.elisa.fi
+    rules:
+    - ignoredNamespaces:
+      - kube-system
+      spec:
+        apiVersion: networking.k8s.io/v1
+        kind: NetworkPolicy
+        metadata:
+          name: allow-all-except-metadata
+        spec:
+          podSelector: {}
+          egress:
+          - to:
+            - ipBlock:
+                cidr: 0.0.0.0/0
+                except:
+                - 169.254.169.254/32
+          policyTypes:
+          - Egress
