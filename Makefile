@@ -30,11 +30,11 @@ run: build
 
 build-linux-amd64:
 	rm -f bin/linux/$(OPERATOR_NAME)
-	GO111MODULE=on GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -v -i -o bin/linux/$(OPERATOR_NAME) ./cmd
+	GO111MODULE=on GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bin/linux/$(OPERATOR_NAME) ./cmd
 
 build:
 	rm -f bin/$(OPERATOR_NAME)
-	GO111MODULE=on go build -v -i -o bin/$(OPERATOR_NAME) ./cmd
+	GO111MODULE=on go build -v -o bin/$(OPERATOR_NAME) ./cmd
 
 build-image: build-linux-amd64
 	docker build -t $(IMAGE):latest .

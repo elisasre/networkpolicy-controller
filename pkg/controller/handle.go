@@ -2,10 +2,13 @@ package controller
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"regexp"
+	"strings"
 
+	"k8s.io/api/core/v1"
 	networkv1 "k8s.io/api/networking/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -19,19 +22,32 @@ func notFound(err error, name string) bool {
 }
 
 func (c *Controller) ensurePoliciesExist(ns *v1.Namespace) {
-	for _, rule := range c.config.rules {
+	for _, rule := range c.config.Rules {
 		if Contains(rule.IgnoredNamespaces, ns.Name) {
 			continue
 		}
-		val, ok := ns.ObjectMeta.Annotations[c.config.ignoreAnnotation]
+		val, ok := ns.ObjectMeta.Annotations[c.config.IgnoreAnnotation]
 		if ok && val == "true" {
 			continue
 		}
-		ctx := context.Background()
-		_, err := c.kclient.NetworkingV1().NetworkPolicies(ns.Name).Update(ctx, rule.Spec, metav1.UpdateOptions{})
+		asBytes, err := json.Marshal(rule.Spec)
 		if err != nil {
-			if notFound(err, rule.Spec.Name) {
-				_, err = c.kclient.NetworkingV1().NetworkPolicies(ns.Name).Create(ctx, rule.Spec, metav1.CreateOptions{})
+			log.Printf("Got error while marshalling %s: %v", ns.Name, err)
+			continue
+		}
+		spec := strings.ReplaceAll(string(asBytes), "self()", ns.Name)
+		finalSpec := &networkv1.NetworkPolicy{}
+		err = json.Unmarshal([]byte(spec), &finalSpec)
+		if err != nil {
+			log.Printf("Got error while unmarshalling %s: %v", ns.Name, err)
+			continue
+		}
+
+		ctx := context.Background()
+		_, err = c.kclient.NetworkingV1().NetworkPolicies(ns.Name).Update(ctx, finalSpec, metav1.UpdateOptions{})
+		if err != nil {
+			if notFound(err, finalSpec.Name) {
+				_, err = c.kclient.NetworkingV1().NetworkPolicies(ns.Name).Create(ctx, finalSpec, metav1.CreateOptions{})
 			}
 			if err != nil {
 				log.Printf("Got error namespace %s: %v", ns.Name, err)

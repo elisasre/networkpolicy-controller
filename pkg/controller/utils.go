@@ -1,20 +1,31 @@
 package controller
 
 import (
+	"encoding/json"
 	"io/ioutil"
-
-	"gopkg.in/yaml.v2"
+	"log"
 )
 
 func makeConfig(path string) (*Config, error) {
 	config := &Config{}
+	log.Printf("Loading config from path %s", path)
 	yamlFile, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
-	err = yaml.Unmarshal(yamlFile, config)
+	err = json.Unmarshal(yamlFile, config)
 	if err != nil {
 		return nil, err
 	}
 	return config, nil
+}
+
+// Contains is checking does array contain single word
+func Contains(array []string, word string) bool {
+	for _, item := range array {
+		if item == word {
+			return true
+		}
+	}
+	return false
 }

@@ -1,6 +1,6 @@
 module github.com/ElisaOyj/networkpolicy-controller
 
-go 1.15
+go 1.16
 
 require (
 	k8s.io/api v0.21.0

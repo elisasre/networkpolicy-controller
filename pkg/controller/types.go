@@ -4,13 +4,14 @@ import (
 	networkv1 "k8s.io/api/networking/v1"
 )
 
-type networkRule struct {
-	IgnoredNamespaces []string                 `yaml:"ignoredNamespaces"`
-	Spec              *networkv1.NetworkPolicy `yaml:"spec"`
+// NetworkRule ...
+type NetworkRule struct {
+	IgnoredNamespaces []string                 `json:"ignoredNamespaces"`
+	Spec              *networkv1.NetworkPolicy `json:"spec"`
 }
 
 // Config ...
 type Config struct {
-	rules            []networkRule `yaml:"rules"`
-	ignoreAnnotation string        `yaml:"ignoreAnnotation"`
+	Rules            []NetworkRule `json:"rules"`
+	IgnoreAnnotation string        `json:"ignoreAnnotation"`
 }

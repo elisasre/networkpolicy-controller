@@ -28,7 +28,7 @@ func main() {
 		panic(err.Error())
 	}
 
-	configFile := "./hack/dev.yaml"
+	configFile := "./hack/dev.json"
 	if os.Getenv("CONFIG") != "" {
 		configFile = os.Getenv("CONFIG")
 	}
