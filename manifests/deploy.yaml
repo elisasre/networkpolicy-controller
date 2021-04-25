@@ -18,14 +18,15 @@ rules:
   resources:
   - networkpolicies
   verbs:
+  - get
   - list
   - watch
-  - update
   - create
 - apiGroups: [""]
   resources:
   - namespaces
   verbs:
+  - get
   - list
   - watch
 
@@ -64,6 +65,83 @@ spec:
         app.kubernetes.io/name: networkpolicy-controller
     spec:
       serviceAccountName: networkpolicy-controller
+      volumes:
+      - name: networkpolicy-configuration
+        configMap:
+          name: networkpolicy-configuration
       containers:
       - name: networkpolicy-controller
         image: elisaoyj/networkpolicy-controller:latest
+        volumeMounts:
+        - name: networkpolicy-configuration
+          mountPath: /code/config
+        env:
+        - name: CONFIG
+          value: /code/config/config.json
+
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: networkpolicy-configuration
+  labels:
+    app.kubernetes.io/name: networkpolicy-controller
+data:
+  config.json: |-
+    {
+      "ignoreAnnotation": "networkpolicy.elisa.fi",
+      "rules": [
+        {
+          "ignoredNamespaces": [
+            "kube-system",
+            "ingress-nginx-internal",
+            "ingress-nginx-external",
+            "monitoring"
+          ],
+          "spec": {
+            "kind": "NetworkPolicy",
+            "apiVersion": "networking.k8s.io/v1",
+            "metadata": {
+              "name": "namespace-isolation"
+            },
+            "spec": {
+              "podSelector": {},
+              "ingress": [
+                {
+                  "from": [
+                    {
+                      "namespaceSelector": {
+                        "matchLabels": {
+                          "app.kubernetes.io/name": "self()"
+                        }
+                      }
+                    },
+                    {
+                      "namespaceSelector": {
+                        "matchLabels": {
+                          "app.kubernetes.io/name": "ingress-nginx-internal"
+                        }
+                      }
+                    },
+                    {
+                      "namespaceSelector": {
+                        "matchLabels": {
+                          "app.kubernetes.io/name": "ingress-nginx-external"
+                        }
+                      }
+                    },
+                    {
+                      "namespaceSelector": {
+                        "matchLabels": {
+                          "app.kubernetes.io/name": "monitoring"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }

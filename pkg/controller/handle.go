@@ -2,39 +2,17 @@ package controller
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"regexp"
+	"strings"
 
+	"k8s.io/api/core/v1"
 	networkv1 "k8s.io/api/networking/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
-
-const (
-	kubeSystem           = "kube-system"
-	cloudMetadataAddress = "169.254.169.254/32"
-)
-
-var policy = &networkv1.NetworkPolicy{
-	ObjectMeta: metav1.ObjectMeta{
-		Name: "allow-all-except-metadata",
-	},
-	Spec: networkv1.NetworkPolicySpec{
-		PolicyTypes: []networkv1.PolicyType{networkv1.PolicyTypeEgress},
-		Egress: []networkv1.NetworkPolicyEgressRule{
-			{
-				To: []networkv1.NetworkPolicyPeer{
-					{
-						IPBlock: &networkv1.IPBlock{
-							CIDR:   "0.0.0.0/0",
-							Except: []string{cloudMetadataAddress},
-						},
-					},
-				},
-			},
-		},
-	},
-}
 
 func notFound(err error, name string) bool {
 	match, err := regexp.MatchString(fmt.Sprintf("\"%s\" not found$", name), err.Error())
@@ -44,16 +22,37 @@ func notFound(err error, name string) bool {
 	return match
 }
 
-func (c *Controller) ensurePolicyExist(namespace string) {
-	if namespace != kubeSystem {
-		ctx := context.Background()
-		_, err := c.kclient.NetworkingV1().NetworkPolicies(namespace).Update(ctx, policy, metav1.UpdateOptions{})
+func (c *Controller) ensurePoliciesExist(ns *v1.Namespace) {
+	for _, rule := range c.config.Rules {
+		if Contains(rule.IgnoredNamespaces, ns.Name) {
+			continue
+		}
+		val, ok := ns.ObjectMeta.Annotations[c.config.IgnoreAnnotation]
+		if ok && val == "true" {
+			continue
+		}
+		asBytes, err := json.Marshal(rule.Spec)
 		if err != nil {
-			if notFound(err, policy.Name) {
-				_, err = c.kclient.NetworkingV1().NetworkPolicies(namespace).Create(ctx, policy, metav1.CreateOptions{})
-			}
-			if err != nil {
-				log.Printf("ERROR namespace %s: %v", namespace, err)
+			log.Printf("Got error while marshalling %s: %v", ns.Name, err)
+			continue
+		}
+		spec := strings.ReplaceAll(string(asBytes), "self()", ns.Name)
+		finalSpec := &networkv1.NetworkPolicy{}
+		err = json.Unmarshal([]byte(spec), &finalSpec)
+		if err != nil {
+			log.Printf("Got error while unmarshalling %s: %v", ns.Name, err)
+			continue
+		}
+		ctx := context.Background()
+		_, err = c.kclient.NetworkingV1().NetworkPolicies(ns.Name).Get(ctx, finalSpec.Name, metav1.GetOptions{})
+		if err != nil {
+			if errors.IsNotFound(err) {
+				_, errCreate := c.kclient.NetworkingV1().NetworkPolicies(ns.Name).Create(ctx, finalSpec, metav1.CreateOptions{})
+				if errCreate != nil {
+					log.Printf("Got error while creating networkpolicy %s - %s: %v", ns.Name, finalSpec.Name, errCreate)
+				}
+			} else {
+				log.Printf("Got error while finding networkpolicy %s: %v", ns.Name, err)
 			}
 		}
 	}

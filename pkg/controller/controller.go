@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	"log"
 	"sync"
 	"time"
 
@@ -23,6 +24,7 @@ type Controller struct {
 	nsInformer cache.SharedInformer
 	npInformer cache.SharedInformer
 	kclient    *kubernetes.Clientset
+	config     *Config
 }
 
 // Run starts the process for listening for event changes and acting upon those changes.
@@ -39,7 +41,7 @@ func (c *Controller) Run(stopCh <-chan struct{}, wg *sync.WaitGroup) {
 }
 
 // NewNetworkWatcher creates a new nsController
-func NewNetworkWatcher(kclient *kubernetes.Clientset) *Controller {
+func NewNetworkWatcher(kclient *kubernetes.Clientset, configFile string) *Controller {
 	watcher := &Controller{}
 	ctx := context.Background()
 	nsInformer := cache.NewSharedIndexInformer(
@@ -81,15 +83,28 @@ func NewNetworkWatcher(kclient *kubernetes.Clientset) *Controller {
 	watcher.kclient = kclient
 	watcher.nsInformer = nsInformer
 	watcher.npInformer = npInformer
+
+	config, err := makeConfig(configFile)
+	if err != nil {
+		log.Fatalf("could not load config '%+v'", err)
+		return nil
+	}
+	watcher.config = config
 	return watcher
 }
 
 func (c *Controller) createNS(obj interface{}) {
 	ns := obj.(*v1.Namespace)
-	c.ensurePolicyExist(ns.Name)
+	c.ensurePoliciesExist(ns)
 }
 
 func (c *Controller) deleteNP(obj interface{}) {
 	np := obj.(*networkv1.NetworkPolicy)
-	c.ensurePolicyExist(np.Namespace)
+	ctx := context.Background()
+	ns, err := c.kclient.CoreV1().Namespaces().Get(ctx, np.Namespace, metav1.GetOptions{})
+	if err != nil {
+		log.Printf("Got error while searching namespace %s: %v", np.Namespace, err)
+		return
+	}
+	c.ensurePoliciesExist(ns)
 }
