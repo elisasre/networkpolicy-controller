@@ -28,7 +28,7 @@ func (c *Controller) ensurePoliciesExist(ns *v1.Namespace) {
 			continue
 		}
 		val, ok := ns.ObjectMeta.Annotations[c.config.IgnoreAnnotation]
-		if ok && val == "true" {
+		if ok && val == "false" {
 			continue
 		}
 		asBytes, err := json.Marshal(rule.Spec)
