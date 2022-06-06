@@ -95,4 +95,4 @@ spec:
 
 # Install
 
-`kubectl apply -f https://raw.githubusercontent.com/ElisaOyj/networkpolicy-controller/master/manifests/deploy.yaml`
+`kubectl apply -f https://raw.githubusercontent.com/elisasre/networkpolicy-controller/master/manifests/deploy.yaml`
