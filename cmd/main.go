@@ -7,7 +7,7 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/ElisaOyj/networkpolicy-controller/pkg/controller"
+	"github.com/elisasre/networkpolicy-controller/pkg/controller"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 )
