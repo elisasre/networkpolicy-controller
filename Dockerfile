@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 FROM alpine:latest as certs
 
 RUN apk update && \
@@ -10,5 +12,5 @@ FROM scratch
 USER 1001
 WORKDIR /code
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY bin/linux/networkpolicy-controller .
+COPY --from=bin networkpolicy-controller .
 ENTRYPOINT ["/code/networkpolicy-controller"]
