@@ -1,40 +1,30 @@
-OPERATOR_NAME := networkpolicy-controller
-IMAGE := elisaoyj/$(OPERATOR_NAME)
-ifeq ($(USE_JSON_OUTPUT), 1)
-GOTEST_REPORT_FORMAT := -json
+# Exports for go.mk
+export APP_NAME				:= networkpolicy-controller
+export DOCKER_IMAGE_NAME	:= quay.io/elisaoyj/${APP_NAME}
+
+# Download wanted go.mk version automatically if not present.
+BASE_VERSION  := 832eda4
+BASE_MAKE     := go-${BASE_VERSION}.mk
+FETCH_BASE_MAKE	= $(shell gh api -H 'Accept: application/vnd.github.v3.raw' 'repos/elisasre/baseconfig/contents/go.mk?ref=${BASE_VERSION}' > ${BASE_MAKE})
+ifeq ($(wildcard ${BASE_MAKE}),)
+TRIGGER := ${FETCH_BASE_MAKE}
 endif
 
-.PHONY: clean deps test gofmt run ensure build build-image build-linux-amd64
+include ${BASE_MAKE}
+
+
+.PHONY: clean update run cover-info
+
+validate-go-mk:
+	@echo Updating go.mk: ${FETCH_BASE_MAKE}
+	git diff --exit-code -- ${BASE_MAKE}
 
 clean:
 	git clean -Xdf
 
-deps:
-	go get -u golang.org/x/lint/golint
+update:
+	go get -u
 
-test:
-	go test ./... -v -coverprofile=gotest-coverage.out $(GOTEST_REPORT_FORMAT) > gotest-report.out && cat gotest-report.out || (cat gotest-report.out; exit 1)
-	golint -set_exit_status cmd/... pkg/... > golint-report.out && cat golint-report.out || (cat golint-report.out; exit 1)
-	./hack/gofmt.sh
-	git diff --exit-code go.mod go.sum
-
-gofmt:
-	./hack/gofmt.sh
-
-ensure:
-	go mod tidy
-	go mod vendor
-
-run: build
-	./bin/$(OPERATOR_NAME)
-
-build-linux-amd64:
-	rm -f bin/linux/$(OPERATOR_NAME)
-	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bin/linux/$(OPERATOR_NAME) ./cmd
-
-build:
-	rm -f bin/$(OPERATOR_NAME)
-	go build -v -o bin/$(OPERATOR_NAME) ./cmd
-
-build-image: build-linux-amd64
-	docker build -t $(IMAGE):latest .
+run: run/${SYS_GOOS}/${SYS_GOARCH}
+run/%: go-build/%
+	$(BUILD_OUTPUT)
