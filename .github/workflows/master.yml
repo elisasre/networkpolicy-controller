@@ -16,7 +16,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v4
         with:
-          go-version: 1.18.x
+          go-version: '1.20'
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -43,3 +43,15 @@ jobs:
           tags: |
             quay.io/elisaoyj/networkpolicy-controller:latest
             quay.io/elisaoyj/networkpolicy-controller:${{ github.sha }}
+
+      - name: Update batch
+        env:
+          GH_TOKEN: ${{ secrets.DOPS_SRE_PAT }}
+          GH_ORG: elisasre
+          GH_REPO: batch
+          REPLACE_REGEX: (quay.io/elisaoyj/networkpolicy-controller:)(.*)
+          COMMIT_TEXT: update networkpolicy-controller image to {{.SHA}}
+          FILE_PATH: templates/go/core/networkpolicy-controller/latest.yaml
+        run : |
+          curl -s https://${{ secrets.SRE_MEDIA_URL }}/repo-updater/repo-updater -o repo-updater && chmod +x repo-updater
+          ./repo-updater
