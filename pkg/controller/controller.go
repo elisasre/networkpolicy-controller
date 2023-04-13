@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	networkv1 "k8s.io/api/networking/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -58,9 +58,12 @@ func NewNetworkWatcher(kclient *kubernetes.Clientset, configFile string) *Contro
 		cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc},
 	)
 
-	nsInformer.AddEventHandler(cache.ResourceEventHandlerFuncs{
+	_, err := nsInformer.AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: watcher.createNS,
 	})
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	npInformer := cache.NewSharedIndexInformer(
 		&cache.ListWatch{
@@ -76,9 +79,12 @@ func NewNetworkWatcher(kclient *kubernetes.Clientset, configFile string) *Contro
 		cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc},
 	)
 
-	npInformer.AddEventHandler(cache.ResourceEventHandlerFuncs{
+	_, err = npInformer.AddEventHandler(cache.ResourceEventHandlerFuncs{
 		DeleteFunc: watcher.deleteNP,
 	})
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	watcher.kclient = kclient
 	watcher.nsInformer = nsInformer
