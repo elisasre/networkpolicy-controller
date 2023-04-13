@@ -2,14 +2,14 @@ package controller
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"log"
+	"os"
 )
 
 func makeConfig(path string) (*Config, error) {
 	config := &Config{}
 	log.Printf("Loading config from path %s", path)
-	yamlFile, err := ioutil.ReadFile(path)
+	yamlFile, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}

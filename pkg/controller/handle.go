@@ -3,24 +3,14 @@ package controller
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
-	"regexp"
 	"strings"
 
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	networkv1 "k8s.io/api/networking/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
-
-func notFound(err error, name string) bool {
-	match, err := regexp.MatchString(fmt.Sprintf("\"%s\" not found$", name), err.Error())
-	if err != nil {
-		return false
-	}
-	return match
-}
 
 func (c *Controller) ensurePoliciesExist(ns *v1.Namespace) {
 	for _, rule := range c.config.Rules {
