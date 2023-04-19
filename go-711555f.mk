@@ -77,7 +77,8 @@ LICENSES_CSV		?= ${GO_REPORTS_DIR}/licenses.csv
 DOCKER_IMAGE_NAME	?= quay.io/elisaoyj/${APP_NAME}
 DOCKER_IMAGE_TAGS	?= sha-${LAST_COMMIT_SHA}
 DOCKER_EXTRA_CTX	?= --build-context bin=$(dir ${BUILD_OUTPUT})
-DOCKER_BUILD_ARGS	?= --progress plain --load
+DOCKERFILE		?= Dockerfile
+DOCKER_BUILD_ARGS	?= -f ${DOCKERFILE} --progress plain --load
 DOCKER_BUILD_CTX	?= .
 
 # Image labels
