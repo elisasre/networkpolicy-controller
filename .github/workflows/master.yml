@@ -58,7 +58,7 @@ jobs:
           GH_TOKEN: ${{ secrets.DOPS_SRE_PAT }}
           GH_ORG: elisasre
           GH_REPO: batch
-          REPLACE_REGEX: (quay.io/elisaoyj/networkpolicy-controller:)(.*)
+          REPLACE_REGEX: (quay.io/elisaoyj/networkpolicy-controller:sha-)(.*)
           COMMIT_TEXT: update networkpolicy-controller image to {{.SHA}}
           FILE_PATH: templates/go/core/networkpolicy-controller/latest.yaml
         run : |
