@@ -3,7 +3,7 @@ export APP_NAME				:= networkpolicy-controller
 export DOCKER_IMAGE_NAME	:= quay.io/elisaoyj/${APP_NAME}
 
 # Download wanted go.mk version automatically if not present.
-BASE_VERSION  := c61814f
+BASE_VERSION  := 63017a2
 BASE_MAKE     := go-${BASE_VERSION}.mk
 FETCH_BASE_MAKE	= $(shell gh api -H 'Accept: application/vnd.github.v3.raw' 'repos/elisasre/baseconfig/contents/go.mk?ref=${BASE_VERSION}' > ${BASE_MAKE})
 ifeq ($(wildcard ${BASE_MAKE}),)
