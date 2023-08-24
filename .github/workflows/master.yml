@@ -10,6 +10,9 @@ jobs:
     runs-on:
     - self-hosted
     - kaas
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v3
         with:
@@ -38,6 +41,11 @@ jobs:
 
       - name: Run unit tests
         run: make go-unit-test
+  
+      - name: Upload test coverage to codecov
+        uses: elisa-actions/codecov-action@v4-elisa
+        with:
+          url: https://codecov.csf.elisa.fi
   
       - name: Lint
         env:
