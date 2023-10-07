@@ -2,7 +2,7 @@ module github.com/elisasre/networkpolicy-controller
 
 go 1.21
 
-toolchain go1.21.1
+toolchain go1.21.2
 
 require (
 	k8s.io/api v0.28.2
