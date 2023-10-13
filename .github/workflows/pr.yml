@@ -38,7 +38,7 @@ jobs:
 
       - name: Build image
         env:
-          DOCKER_IMAGE_TAGS: sha-${{ github.sha }}
+          DOCKER_IMAGE_TAGS: sha-${{ github.event.pull_request.head.sha }}
         run: mage image
 
   automerge:
