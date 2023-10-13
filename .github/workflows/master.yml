@@ -47,6 +47,8 @@ jobs:
         run: mage build
 
       - name: Build image
+        env:
+          DOCKER_IMAGE_TAGS: sha-${{ github.sha }}
         run: mage image
 
       - name: Push image
