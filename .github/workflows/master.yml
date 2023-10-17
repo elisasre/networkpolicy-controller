@@ -31,7 +31,7 @@ jobs:
           password: ${{ secrets.QUAY_TOKEN }}
 
       - name: Run unit tests
-        run: mage unittest
+        run: mage go:unittest
   
       - name: Upload test coverage to codecov
         uses: elisa-actions/codecov-action@v4-elisa
@@ -39,20 +39,21 @@ jobs:
           url: https://codecov.csf.elisa.fi
   
       - name: Lint
-        env:
-          GOLANGCI_LINT_FLAGS: --out-format=github-actions
-        run: mage lint
+        run: mage go:lint
+
+      - name: Vuln check
+        run: mage go:vulncheck
     
       - name: Build binary
-        run: mage build
+        run: mage go:build
 
       - name: Build image
         env:
           DOCKER_IMAGE_TAGS: sha-${{ github.sha }}
-        run: mage image
+        run: mage docker:image
 
       - name: Push image
-        run: mage pushImage
+        run: mage docker:pushImage
 
       - name: Update batch
         env:

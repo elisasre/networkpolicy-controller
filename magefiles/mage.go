@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/elisasre/mageutil"
+	"github.com/magefile/mage/mg"
 )
 
 const (
@@ -15,47 +16,48 @@ const (
 	ImageName = "quay.io/elisaoyj/networkpolicy-controller"
 )
 
+type (
+	Go        mg.Namespace
+	Docker    mg.Namespace
+	Workspace mg.Namespace
+)
+
 // Build binaries for executables under ./cmd
-func Build(ctx context.Context) error {
+func (Go) Build(ctx context.Context) error {
 	return mageutil.BuildAll(ctx)
 }
 
-// UnitTest whole repo
-func UnitTest(ctx context.Context) error {
+// UnitTest runs unit tests for whole repo
+func (Go) UnitTest(ctx context.Context) error {
 	return mageutil.UnitTest(ctx)
 }
 
-// IntegrationTest whole repo
-func IntegrationTest(ctx context.Context) error {
-	return mageutil.IntegrationTest(ctx, "./cmd/"+AppName)
-}
-
-// Lint all go files.
-func Lint(ctx context.Context) error {
+// Lint runs lint for all go files
+func (Go) Lint(ctx context.Context) error {
 	return mageutil.LintAll(ctx)
 }
 
-// VulnCheck all go files.
-func VulnCheck(ctx context.Context) error {
+// VulnCheck runs vuln check for all packages
+func (Go) VulnCheck(ctx context.Context) error {
 	return mageutil.VulnCheckAll(ctx)
 }
 
-// LicenseCheck all files.
-func LicenseCheck(ctx context.Context) error {
+// LicenseCheck checks licences of all packages
+func (Go) LicenseCheck(ctx context.Context) error {
 	return mageutil.LicenseCheck(ctx, os.Stdout, mageutil.CmdDir+AppName)
 }
 
 // Clean removes all files ignored by git
-func Clean(ctx context.Context) error {
+func (Workspace) Clean(ctx context.Context) error {
 	return mageutil.Clean(ctx)
 }
 
-// Image creates docker image.
-func Image(ctx context.Context) error {
+// Image creates docker image
+func (Docker) Image(ctx context.Context) error {
 	return mageutil.DockerBuildDefault(ctx, ImageName, RepoURL)
 }
 
-// PushImage creates docker image.
-func PushImage(ctx context.Context) error {
+// PushImage pushes docker image
+func (Docker) PushImage(ctx context.Context) error {
 	return mageutil.DockerPushAllTags(ctx, ImageName)
 }
