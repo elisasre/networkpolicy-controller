@@ -6,8 +6,9 @@ toolchain go1.21.3
 
 require (
 	github.com/elisasre/mageutil v0.0.0-20231006051539-8aba8002753f
-	k8s.io/api v0.28.2
-	k8s.io/apimachinery v0.28.2
+	github.com/magefile/mage v1.15.0
+	k8s.io/api v0.28.3
+	k8s.io/apimachinery v0.28.3
 	k8s.io/client-go v0.28.2
 )
 
@@ -116,7 +117,6 @@ require (
 	github.com/ldez/tagliatelle v0.5.0 // indirect
 	github.com/leonklingele/grouper v1.1.1 // indirect
 	github.com/lufeee/execinquery v1.2.1 // indirect
-	github.com/magefile/mage v1.15.0 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/maratori/testableexamples v1.0.0 // indirect
