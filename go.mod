@@ -8,7 +8,7 @@ require (
 	github.com/elisasre/mageutil v0.0.0-20231006051539-8aba8002753f
 	github.com/magefile/mage v1.15.0
 	k8s.io/api v0.28.3
-	k8s.io/apimachinery v0.28.3
+	k8s.io/apimachinery v0.28.4
 	k8s.io/client-go v0.28.3
 )
 
@@ -213,7 +213,7 @@ require (
 	golang.org/x/tools v0.9.3 // indirect
 	golang.org/x/vuln v1.0.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/protobuf v1.30.0 // indirect
+	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/src-d/go-billy.v4 v4.3.2 // indirect
