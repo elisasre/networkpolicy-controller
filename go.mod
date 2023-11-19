@@ -7,7 +7,7 @@ toolchain go1.21.4
 require (
 	github.com/elisasre/mageutil v0.0.0-20231006051539-8aba8002753f
 	github.com/magefile/mage v1.15.0
-	k8s.io/api v0.28.3
+	k8s.io/api v0.28.4
 	k8s.io/apimachinery v0.28.4
 	k8s.io/client-go v0.28.3
 )
