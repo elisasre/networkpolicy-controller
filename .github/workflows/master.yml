@@ -52,10 +52,10 @@ jobs:
       - name: Build image
         env:
           DOCKER_IMAGE_TAGS: sha-${{ github.sha }}
-        run: mage docker:image
+        run: mage docker:build
 
       - name: Push image
-        run: mage docker:pushImage
+        run: mage docker:push
 
       - name: Update batch
         env:
