@@ -19,29 +19,33 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Run unit tests
-        run: mage go:unittest
+        run: mage go:unitTest
+
+      - name: Generate cover profile
+        run: mage go:unitCoverProfile
 
       - name: Upload test coverage to codecov
         uses: elisa-actions/codecov-action@v4-elisa
         with:
           url: https://codecov.csf.elisa.fi
-  
+          files: ./target/tests/cover/combined/cover.txt
+
       - name: Lint
         run: mage go:lint
 
       - name: Vuln check
-        run: mage go:vulncheck
+        run: mage go:vulnCheck
 
       - name: License check
-        run: mage go:licensecheck
-    
+        run: mage go:licenses
+
       - name: Build binary
         run: mage go:build
 
       - name: Build image
         env:
           DOCKER_IMAGE_TAGS: sha-${{ github.event.pull_request.head.sha }}
-        run: mage docker:image
+        run: mage docker:build
 
   automerge:
     needs: [build]
