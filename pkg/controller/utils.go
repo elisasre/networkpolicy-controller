@@ -20,7 +20,7 @@ func makeConfig(path string) (*Config, error) {
 	return config, nil
 }
 
-// Contains is checking does array contain single word
+// Contains is checking does array contain single word.
 func Contains(array []string, word string) bool {
 	for _, item := range array {
 		if item == word {
