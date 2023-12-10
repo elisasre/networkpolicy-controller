@@ -19,7 +19,7 @@ const (
 	cacheTime = 3 * 60 * time.Second
 )
 
-// Controller contains controller variables that is needed to work in class
+// Controller contains controller variables that is needed to work in class.
 type Controller struct {
 	nsInformer cache.SharedInformer
 	npInformer cache.SharedInformer
@@ -40,7 +40,7 @@ func (c *Controller) Run(stopCh <-chan struct{}, wg *sync.WaitGroup) {
 	<-stopCh
 }
 
-// NewNetworkWatcher creates a new nsController
+// NewNetworkWatcher creates a new nsController.
 func NewNetworkWatcher(kclient *kubernetes.Clientset, configFile string) *Controller {
 	watcher := &Controller{}
 	ctx := context.Background()
@@ -100,12 +100,20 @@ func NewNetworkWatcher(kclient *kubernetes.Clientset, configFile string) *Contro
 }
 
 func (c *Controller) createNS(obj interface{}) {
-	ns := obj.(*v1.Namespace)
+	ns, ok := obj.(*v1.Namespace)
+	if !ok {
+		log.Printf("Object is not *v1.Namespace: %+v", obj)
+		return
+	}
 	c.ensurePoliciesExist(ns)
 }
 
 func (c *Controller) deleteNP(obj interface{}) {
-	np := obj.(*networkv1.NetworkPolicy)
+	np, ok := obj.(*networkv1.NetworkPolicy)
+	if !ok {
+		log.Printf("Object is not *networkv1.NetworkPolicy: %+v", obj)
+		return
+	}
 	ctx := context.Background()
 	ns, err := c.kclient.CoreV1().Namespaces().Get(ctx, np.Namespace, metav1.GetOptions{})
 	if err != nil {

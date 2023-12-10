@@ -23,7 +23,6 @@ func main() {
 
 	// Create clientset for interacting with the kubernetes cluster
 	clientset, err := newClientSet()
-
 	if err != nil {
 		panic(err.Error())
 	}
