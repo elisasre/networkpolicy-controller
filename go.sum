@@ -176,8 +176,8 @@ github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc h1:U9qPSI2PIWSS1
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/denis-tingaikin/go-header v0.4.3 h1:tEaZKAlqql6SKCY++utLmkPLd6K8IBM20Ha7UVm+mtU=
 github.com/denis-tingaikin/go-header v0.4.3/go.mod h1:0wOCWuN71D5qIgE2nz9KrKmuYBAC2Mra5RassOIQ2/c=
-github.com/elisasre/mageutil v1.4.4 h1:0yq4D4f3T061ky8/WHpiNEBVr3FUQUACa+aGpR8uFnY=
-github.com/elisasre/mageutil v1.4.4/go.mod h1:ACgAljG+6rI4c/YcWPmHNK3hpdUFbFydYZ73qCDbPAU=
+github.com/elisasre/mageutil v1.4.5 h1:c/AxIHggXnZAHk9ZUvFgWa97ABDco07+uBoZ54+5Py0=
+github.com/elisasre/mageutil v1.4.5/go.mod h1:OK5fpA1KPpzG7b+nNosb5nyG1Jf01V/0eKE5NAqu5BE=
 github.com/emicklei/go-restful/v3 v3.11.0 h1:rAQeMHw1c7zTmncogyy8VvRZwtkmkZ4FxERmMY4rD+g=
 github.com/emicklei/go-restful/v3 v3.11.0/go.mod h1:6n3XBCmQQb25CM2LCACGz8ukIrRry+4bhvbpWn3mrbc=
 github.com/emirpasic/gods v1.12.0/go.mod h1:YfzfFFoVP/catgzJb4IKIqXjX78Ha8FMSDh3ymbK86o=
