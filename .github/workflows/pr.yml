@@ -21,14 +21,12 @@ jobs:
       - name: Run unit tests
         run: mage go:unitTest
 
-      - name: Generate cover profile
-        run: mage go:unitCoverProfile
-
       - name: Upload test coverage to codecov
         uses: elisa-actions/codecov-action@v4-elisa
         with:
           url: https://codecov.csf.elisa.fi
-          files: ./target/tests/cover/combined/cover.txt
+          flags: unit
+          files: ./target/tests/cover/unit/cover.txt
 
       - name: Lint
         run: mage go:lint

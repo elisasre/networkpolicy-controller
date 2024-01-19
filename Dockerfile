@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-
 FROM alpine:latest as certs
 
 RUN apk update && \
