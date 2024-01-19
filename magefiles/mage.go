@@ -3,7 +3,6 @@
 package main
 
 import (
-	"context"
 	"os"
 
 	"github.com/magefile/mage/mg"
