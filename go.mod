@@ -2,7 +2,7 @@ module github.com/elisasre/networkpolicy-controller
 
 go 1.22
 
-toolchain go1.22.0
+toolchain go1.22.1
 
 require (
 	github.com/elisasre/mageutil v1.5.2
