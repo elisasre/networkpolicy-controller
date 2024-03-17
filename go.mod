@@ -8,9 +8,9 @@ require (
 	github.com/elisasre/mageutil v1.5.3
 	github.com/magefile/mage v1.15.0
 	github.com/stretchr/testify v1.9.0
-	k8s.io/api v0.29.2
+	k8s.io/api v0.29.3
 	k8s.io/apimachinery v0.29.3
-	k8s.io/client-go v0.29.2
+	k8s.io/client-go v0.29.3
 )
 
 require (
