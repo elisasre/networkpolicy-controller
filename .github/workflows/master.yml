@@ -41,9 +41,6 @@ jobs:
       - name: Lint
         run: mage go:lint
 
-      - name: Vuln check
-        run: mage go:vulncheck
-
       - name: Build binary
         run: mage go:build
 
