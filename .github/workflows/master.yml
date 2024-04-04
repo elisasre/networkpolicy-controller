@@ -32,11 +32,12 @@ jobs:
         run: mage go:unittest
 
       - name: Upload test coverage to codecov
-        uses: elisa-actions/codecov-action@v4-elisa
+        uses: codecov/codecov-action@v4
         with:
           url: https://codecov.csf.elisa.fi
           flags: unit
           files: ./target/tests/cover/unit/cover.txt
+          use_oidc: true
 
       - name: Lint
         run: mage go:lint
