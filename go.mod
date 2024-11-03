@@ -5,7 +5,7 @@ go 1.23.1
 toolchain go1.23.2
 
 require (
-	github.com/elisasre/mageutil v1.7.0
+	github.com/elisasre/mageutil v1.7.1
 	github.com/magefile/mage v1.15.0
 	github.com/stretchr/testify v1.9.0
 	k8s.io/api v0.31.2
