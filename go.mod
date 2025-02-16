@@ -1,6 +1,7 @@
 module github.com/elisasre/networkpolicy-controller
 
-go 1.23.1
+go 1.24.0
+
 require (
 	github.com/elisasre/mageutil v1.8.2
 	github.com/magefile/mage v1.15.0
