@@ -17,7 +17,7 @@ func (c *Controller) ensurePoliciesExist(ns *v1.Namespace) {
 		if Contains(rule.IgnoredNamespaces, ns.Name) {
 			continue
 		}
-		val, ok := ns.ObjectMeta.Annotations[c.config.IgnoreAnnotation]
+		val, ok := ns.Annotations[c.config.IgnoreAnnotation]
 		if ok && val == "false" {
 			continue
 		}
