@@ -60,7 +60,7 @@ jobs:
           GH_REPO: batch
           REPLACE_REGEX: (europe-north1-docker.pkg.dev/sose-sre-5737/sre-public/networkpolicy-controller:sha-)(.*)
           COMMIT_TEXT: update networkpolicy-controller image to {{.SHA}}
-          FILE_PATH: templates/go/core/networkpolicy-controller/latest.yaml
+          FILE_PATH: templates/go/networkpolicy-controller/latest.yaml
         run: |
           curl -s https://${{ secrets.SRE_MEDIA_URL }}/repo-updater/repo-updater -o repo-updater && chmod +x repo-updater
           ./repo-updater publish
