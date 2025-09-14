@@ -9,7 +9,7 @@ require (
 	github.com/magefile/mage v1.15.0
 	github.com/stretchr/testify v1.11.1
 	k8s.io/api v0.34.0
-	k8s.io/apimachinery v0.34.0
+	k8s.io/apimachinery v0.34.1
 	k8s.io/client-go v0.34.0
 )
 
